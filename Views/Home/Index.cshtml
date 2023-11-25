@@ -1,8 +1,134 @@
-﻿@{
+﻿@model OnlineWallet.Models.User
+
+@{
     ViewData["Title"] = "Home Page";
 }
-
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="text-center d-flex justify-content-center">
+    @if (User.Identity.IsAuthenticated)
+    {
+            <div class="card text-bg-dark border-2" style="max-width: 30rem;">
+                <div class="card-title">
+                    <img class="img-fluid" src="https://cdn-icons-png.flaticon.com/512/5776/5776173.png" alt=""> 
+                </div>
+                <div class="card-body bg-warning">
+                    <h1 class="card-title fw-semibold" style="font-size: 60px;">1000 сом</h1>
+                    <button class="btn btn-dark me-4" data-bs-toggle="modal" data-bs-target="#transferModal">Перевод</button>
+                    <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#paymentModal">Оплата услуг</button>
+                </div>
+            </div>
+    }
+    else
+    {
+            <div class="card bg-warning border-dark border-2" style="max-width: 30rem;">
+                <div class="card-title m-3">
+                    <h1 class="card-title fw-bold" style="font-size: 40px;">Добро пожаловать</h1>
+                </div>
+                <div class="card-body bg-dark">
+                    <img class="img-fluid" src="https://cdn-icons-png.flaticon.com/512/5776/5776173.png" alt=""> 
+                    <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#replenishModal">Пополнить счет</button>
+                </div>
+            </div>
+    }
 </div>
+
+    <div class="modal fade" id="transferModal" tabindex="-1" aria-labelledby="transferModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="transferModalLabel">Перевод</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="transferForm">
+                        <div class="mb-3">
+                            <label for="accountNumber" class="form-label">Номер счета</label>
+                            <input type="text" class="form-control" id="inputAccountNumber" name="inputAccountNumber">
+                        </div>
+                        <div class="mb-3">
+                            <label for="amountMoney" class="form-label">Сумма</label>
+                            <input type="number" class="form-control" id="inputAmountMoney" name="inputAmountMoney">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Оплатить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="modal fade" id="paymentModal" tabindex="-1" aria-labelledby="paymentModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="paymentModalLabel">Редактировать</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="transferForm">
+                        <div class="mb-3">
+                            <label for="transferAccountNumber" class="form-label">Номер счета</label>
+                            <input type="text" class="form-control" id="transferAccountNumber" name="transferAccountNumber">
+                        </div>
+                        <div class="mb-3">
+                            <label for="transferAmountMoney" class="form-label">Сумма</label>
+                            <input type="number" class="form-control" id="transferAmountMoney" name="transferAmountMoney">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Оплатить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<div class="modal fade" id="replenishModal" tabindex="-1" aria-labelledby="replenishModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="replenishModalLabel">Пополнить</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="replenishForm">
+                        <div class="mb-3">
+                            <label for="replenishAccountNumber" class="form-label">Номер счета</label>
+                            <input type="text" class="form-control" id="replenishAccountNumber" name="replenishAccountNumber">
+                        </div>
+                        <div class="mb-3">
+                            <label for="replenishAmountMoney" class="form-label">Сумма</label>
+                            <input type="number" class="form-control" id="replenishAmountMoney" name="replenishAmountMoney">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Пополнить</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('#replenishForm').submit(function (e) {
+                e.preventDefault();
+
+                $.ajax({
+                    url: '@Url.Action("Replenish", "Users")',
+                    type: 'Post',
+                    data: {
+                        accountNumber: $('#replenishAccountNumber').val(),
+                        amountMoney: parseInt($('#replenishAmountMoney').val(), 10)
+                    },
+                    success: function(data) {
+                        console.log(data);
+                        $('#replenishModal').modal('hide');
+                        alert(data);
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Произошла ошибка при выполнении операции: ' + error);
+                    }
+                });
+            });
+        });
+    </script>
+}
+
+

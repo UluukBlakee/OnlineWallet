@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using OnlineWallet.Models;
 using System.Diagnostics;
 
@@ -7,15 +8,22 @@ namespace OnlineWallet.Controllers
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
-
-        public HomeController(ILogger<HomeController> logger)
+        private readonly WalletContext _context;
+        public HomeController(ILogger<HomeController> logger, WalletContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            return View();
+            if (User.Identity.IsAuthenticated)
+            {
+                User user = await _context.Users.FirstOrDefaultAsync(u => u.Email == User.Identity.Name);
+                return View(user);
+            }
+            else
+                return View();
         }
 
         public IActionResult Privacy()
