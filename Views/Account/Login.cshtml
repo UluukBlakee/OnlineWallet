@@ -1,21 +1,23 @@
 ﻿@model OnlineWallet.ViewModels.LoginViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = "Login";
 }
 
-<h2 class="my-4">Вход в приложение</h2>
+<h2 class="my-4">@Localizer["Title"]</h2>
 <div class="row">
     <div class="col-md-4">
         <form method="post" asp-controller="Account" asp-action="Login">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Login" class="control-label"></label>
+                <label class="control-label">@Localizer["Login"]</label>
                 <input asp-for="Login" class="form-control" />
                 <span asp-validation-for="Login" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
+                <label class="control-label">@Localizer["Password"]</label>
                 <div class="input-group">
                     <input asp-for="Password" class="form-control password-input" />
                     <span class="input-group-text password-toggle">
@@ -26,10 +28,10 @@
             </div>
             <div class="form-group form-check">
                 <input asp-for="RememberMe" class="form-check-input" />
-                <label class="form-check-label" asp-for="RememberMe"></label>
+                <label class="form-check-label">@Localizer["RememberMe"]</label>
             </div>
             <div class="form-group">
-                <input type="submit" value="Войти" class="btn btn-primary" />
+                <input type="submit" value="@Localizer["Button"]" class="btn btn-primary" />
             </div>
         </form>
     </div>

@@ -1,20 +1,22 @@
 ﻿@model IEnumerable<OnlineWallet.Models.ServiceProvider>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Услуги</h1>
+<h1>@Localizer["Title"]</h1>
 
 <table class="table">
     <thead>
         <tr>
             <th>
-                Название
+                @Localizer["Name"]
             </th>
             <th></th>
         </tr>
-    </thead>
+    </thead>s
     <tbody>
 @foreach (var item in Model) {
         <tr>

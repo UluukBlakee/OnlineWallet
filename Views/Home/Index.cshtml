@@ -1,4 +1,6 @@
 ﻿@model OnlineWallet.Models.User
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = "Home Page";
@@ -11,9 +13,9 @@
                     <img class="img-fluid" src="https://cdn-icons-png.flaticon.com/512/5776/5776173.png" alt=""> 
                 </div>
                 <div class="card-body bg-warning">
-                    <h1 class="card-title fw-semibold" style="font-size: 60px;" id="balance">@Model.Balance сом</h1>
-                    <button class="btn btn-dark me-4" data-bs-toggle="modal" data-bs-target="#transferModal">Перевод</button>
-                    <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#paymentModal">Оплата услуг</button>
+                    <h1 class="card-title fw-semibold" style="font-size: 60px;" id="balance">@Model.Balance @Localizer["Currency"]</h1>
+                    <button class="btn btn-dark me-4" data-bs-toggle="modal" data-bs-target="#transferModal">@Localizer["Transfer"]</button>
+                    <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#paymentModal">@Localizer["Payment"]</button>
                 </div>
             </div>
     }
@@ -21,11 +23,11 @@
     {
             <div class="card bg-warning border-dark border-2" style="max-width: 30rem;">
                 <div class="card-title m-3">
-                    <h1 class="card-title fw-bold" style="font-size: 40px;">Добро пожаловать</h1>
+                    <h1 class="card-title fw-bold" style="font-size: 40px;">@Localizer["Title"]</h1>
                 </div>
                 <div class="card-body bg-dark">
                     <img class="img-fluid" src="https://cdn-icons-png.flaticon.com/512/5776/5776173.png" alt=""> 
-                    <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#replenishModal">Пополнить счет</button>
+                    <button class="btn btn-light" data-bs-toggle="modal" data-bs-target="#replenishModal">@Localizer["Replenish"]</button>
                 </div>
             </div>
     }
@@ -37,20 +39,20 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="transferModalLabel">Перевод</h5>
+                    <h5 class="modal-title" id="transferModalLabel">@Localizer["Transfer"]</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="transferForm">
                         <div class="mb-3">
-                            <label for="transferAccountNumber" class="form-label">Номер счета</label>
+                            <label for="transferAccountNumber" class="form-label">@Localizer["AccountNumber"]</label>
                             <input type="text" class="form-control" id="transferAccountNumber" name="transferAccountNumber">
                         </div>
                         <div class="mb-3">
-                            <label for="transferAmountMoney" class="form-label">Сумма</label>
+                            <label for="transferAmountMoney" class="form-label">@Localizer["Amount"]</label>
                             <input type="number" class="form-control" id="transferAmountMoney" name="transferAmountMoney">
                         </div>
-                        <button type="submit" class="btn btn-primary">Оплатить</button>
+                        <button type="submit" class="btn btn-primary">@Localizer["BtnTransfer"]</button>
                     </form>
                 </div>
             </div>
@@ -62,13 +64,13 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="paymentModalLabel">Оплатить услуги</h5>
+                    <h5 class="modal-title" id="paymentModalLabel">@Localizer["Payment"]</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="paymentForm">
                         <div class="mb-3">
-                            <label for="service" class="form-label">Выберите услугу</label>
+                            <label for="service" class="form-label">@Localizer["Services"]</label>
                             <select class="form-control" id="service" name="service">
                                 @foreach (var service in ViewBag.Services)
                                 {
@@ -77,14 +79,14 @@
                             </select>
                         </div>
                         <div class="mb-3">
-                            <label for="paymentAccountNumber" class="form-label">Номер счета услуги</label>
+                            <label for="paymentAccountNumber" class="form-label">@Localizer["AccountNumber"]</label>
                             <input type="text" class="form-control" id="paymentAccountNumber" name="paymentAccountNumber">
                         </div>
                         <div class="mb-3">
-                            <label for="paymentAmountMoney" class="form-label">Сумма</label>
+                            <label for="paymentAmountMoney" class="form-label">@Localizer["Amount"]</label>
                             <input type="number" class="form-control" id="paymentAmountMoney" name="paymentAmountMoney">
                         </div>
-                        <button type="submit" class="btn btn-primary">Оплатить</button>
+                        <button type="submit" class="btn btn-primary">@Localizer["BtnTransfer"]</button>
                     </form>
                 </div>
             </div>
@@ -97,20 +99,20 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="replenishModalLabel">Пополнить счет</h5>
+                        <h5 class="modal-title" id="replenishModalLabel">@Localizer["Replenish"]</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <form id="replenishForm">
                             <div class="mb-3">
-                                <label for="replenishAccountNumber" class="form-label">Номер счета</label>
+                                <label for="replenishAccountNumber" class="form-label">@Localizer["AccountNumber"]</label>
                                 <input type="text" class="form-control" id="replenishAccountNumber" name="replenishAccountNumber">
                             </div>
                             <div class="mb-3">
-                                <label for="replenishAmountMoney" class="form-label">Сумма</label>
+                                <label for="replenishAmountMoney" class="form-label">@Localizer["Amount"]</label>
                                 <input type="number" class="form-control" id="replenishAmountMoney" name="replenishAmountMoney">
                             </div>
-                            <button type="submit" class="btn btn-primary">Пополнить</button>
+                            <button type="submit" class="btn btn-primary">@Localizer["BtnReplenish"]</button>
                         </form>
                     </div>
                 </div>

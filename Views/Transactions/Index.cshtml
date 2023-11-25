@@ -1,46 +1,48 @@
 ﻿@model IEnumerable<OnlineWallet.Models.Transaction>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = "Index";
 }
 
-<h1>Журнал транзакций</h1>
+<h1>@Localizer["Title"]</h1>
 
 <form method="get" asp-action="Index">
     <div class="form-group mb-2">
-        <label class="col-form-label">Фильтрация:</label>
+        <label class="col-form-label">@Localizer["FilterTitle"]:</label>
         <div class="row">
             <div class="col">
                 <input type="date" class="form-control" name="fromDate" />
-                <small class="form-text text-muted">с</small>
+                <small class="form-text text-muted">@Localizer["FromDate"]</small>
             </div>
             <div class="col">
                 <input type="date" class="form-control" name="toDate" />
-                <small class="form-text text-muted">По</small>
+                <small class="form-text text-muted">@Localizer["ToDate"]</small>
             </div>
         </div>
     </div>
 
-    <button type="submit" class="btn btn-primary">Отправить</button>
+    <button type="submit" class="btn btn-primary">@Localizer["Button"]</button>
 </form>
 
 <table class="table">
     <thead>
         <tr>
             <th>
-                От
+                @Localizer["From"]
             </th>
             <th>
-                Кому
+                @Localizer["Whom"]
             </th>
             <th>
-                Дата
+                @Localizer["Date"]
             </th>
             <th>
-                Тип
+                @Localizer["Type"]
             </th>
             <th>
-                Сумма
+                @Localizer["Amount"]
             </th>
             <th></th>
         </tr>
@@ -62,7 +64,7 @@
                     @item.Type
                 </td>
                 <td>
-                    @item.Amount сом
+                    @item.Amount @Localizer["Currency"]
                 </td>
             </tr>
         }

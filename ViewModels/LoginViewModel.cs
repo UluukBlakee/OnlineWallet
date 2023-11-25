@@ -5,7 +5,7 @@ namespace OnlineWallet.ViewModels
 {
     public class LoginViewModel
     {
-        [Required(ErrorMessage = "Поле 'Логин' обязательно для заполнения")]
+        [Required(ErrorMessage = "Поле 'Email или Личный счет' обязательно для заполнения")]
         [Display(Name = "Email или Личный счет")]
         public string Login { get; set; }
         [Required(ErrorMessage = "Поле 'Пароль' обязательно для заполнения")]

@@ -1,4 +1,6 @@
 ﻿@model OnlineWallet.Models.ServiceProvider
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = "Details";
@@ -13,12 +15,12 @@
                     <img class="img-fluid" src="https://cdn-icons-png.flaticon.com/512/5776/5776173.png" alt=""> 
                 </div>
                 <div class="card-body bg-warning">
-                    <h1 class="card-title fw-semibold" style="font-size: 60px;" id="balance">@ViewBag.ServiceUser.Balance сом</h1>
+                    <h1 class="card-title fw-semibold" style="font-size: 60px;" id="balance">@ViewBag.ServiceUser.Balance @Localizer["Currency"]</h1>
                 </div>
             </div>
 }
 else {
-    <a class="btn btn-primary" asp-controller="ServiceUsers" asp-action="Create" asp-route-id="@Model.Id">Пользоваться услугой</a>
+    <a class="btn btn-primary" asp-controller="ServiceUsers" asp-action="Create" asp-route-id="@Model.Id">@Localizer["Button"]</a>
 }
 </div>
 

@@ -1,26 +1,28 @@
 ﻿@model OnlineWallet.ViewModels.RegisterViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
     ViewData["Title"] = "Register";
 }
 
-<h2>Регистрация нового пользователя</h2>
+<h2>@Localizer["Title"]</h2>
 <div class="row">
     <div class="col-md-4">
         <form method="post" asp-controller="Account" asp-action="Register" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
+                <label class="control-label">@Localizer["Email"]</label>
                 <input asp-for="Email" class="form-control" />
                 <span asp-validation-for="Email" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PhoneNumber" class="control-label"></label>
+                <label class="control-label">@Localizer["PhoneNumber"]</label>
                 <input asp-for="PhoneNumber" class="form-control" />
                 <span asp-validation-for="PhoneNumber" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Password" class="control-label"></label>
+                <label class="control-label">@Localizer["Password"]</label>
                 <div class="input-group">
                     <input asp-for="Password" class="form-control password-input" />
                     <span class="input-group-text password-toggle">
@@ -30,7 +32,7 @@
                 <span asp-validation-for="Password" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="PasswordConfirm" class="control-label"></label>
+                <label class="control-label">@Localizer["PassConfirm"]</label>
                 <div class="input-group">
                     <input asp-for="PasswordConfirm" class="form-control password-input" />
                     <span class="input-group-text password-toggle">
@@ -40,7 +42,7 @@
                 <span asp-validation-for="PasswordConfirm" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Регистрация" class="btn btn-primary" />
+                <input type="submit" value="@Localizer["Button"]" class="btn btn-primary" />
             </div>
         </form>
     </div>
