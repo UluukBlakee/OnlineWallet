@@ -12,6 +12,22 @@ namespace OnlineWallet.Controllers
             _context = context;
         }
 
+        public async Task<IActionResult> Index(DateTime? fromDate, DateTime? toDate)
+        {
+            User user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
+            List<Transaction> transactions = await _context.Transactions.Include(t => t.SenderUser).Include(t => t.ReceiverUser).Where(t => t.SenderUserId == user.Id || t.ReceiverUserId == user.Id).ToListAsync();
+
+            if (fromDate != null)
+            {
+                transactions = transactions.Where(t => t.Date >= fromDate).ToList();
+            }
+            if (toDate != null)
+            {
+                transactions = transactions.Where(t => t.Date <= toDate).ToList();
+            }
+            return View(transactions);
+        }
+
         public async Task<IActionResult> GetBalance()
         {
             User user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);

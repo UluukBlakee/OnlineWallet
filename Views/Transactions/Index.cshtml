@@ -1,0 +1,70 @@
+﻿@model IEnumerable<OnlineWallet.Models.Transaction>
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h1>Журнал транзакций</h1>
+
+<form method="get" asp-action="Index">
+    <div class="form-group mb-2">
+        <label class="col-form-label">Фильтрация:</label>
+        <div class="row">
+            <div class="col">
+                <input type="date" class="form-control" name="fromDate" />
+                <small class="form-text text-muted">с</small>
+            </div>
+            <div class="col">
+                <input type="date" class="form-control" name="toDate" />
+                <small class="form-text text-muted">По</small>
+            </div>
+        </div>
+    </div>
+    
+    <button type="submit" class="btn btn-primary">Отправить</button>
+</form>
+
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Отправитель
+            </th>
+            <th>
+                Получатель
+            </th>
+            <th>
+                Дата
+            </th>
+            <th>
+                Тип
+            </th>
+            <th>
+                Сумма
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+@foreach (var item in Model) {
+        <tr>
+            <td>
+                @(item.SenderUser?.AccountNumber ?? "Пополнение")
+            </td>
+            <td>
+                @item.ReceiverUser.AccountNumber
+            </td>
+            <td>
+                @item.Date.ToShortDateString()
+            </td>
+            <td>
+                @item.Type
+            </td>
+            <td>
+                @item.Amount сом
+            </td>
+        </tr>
+}
+    </tbody>
+</table>
