@@ -7,10 +7,12 @@
         public int Amount { get; set; }
         public string? Type { get; set; }
         public int? SenderUserId { get; set; }
-        public User SenderUser { get; set; }
+        public User? SenderUser { get; set; }
 
-        public int ReceiverUserId { get; set; }
-        public User ReceiverUser { get; set; }
+        public int? ReceiverUserId { get; set; }
+        public User? ReceiverUser { get; set; }
+        public int? ServicesId { get; set; }
+        public ServiceProvider? Services { get; set; }
 
     }
 }

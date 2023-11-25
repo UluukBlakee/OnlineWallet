@@ -20,19 +20,18 @@
             </div>
         </div>
     </div>
-    
+
     <button type="submit" class="btn btn-primary">Отправить</button>
 </form>
-
 
 <table class="table">
     <thead>
         <tr>
             <th>
-                Отправитель
+                От
             </th>
             <th>
-                Получатель
+                Кому
             </th>
             <th>
                 Дата
@@ -47,24 +46,25 @@
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
-        <tr>
-            <td>
-                @(item.SenderUser?.AccountNumber ?? "Пополнение")
-            </td>
-            <td>
-                @item.ReceiverUser.AccountNumber
-            </td>
-            <td>
-                @item.Date.ToShortDateString()
-            </td>
-            <td>
-                @item.Type
-            </td>
-            <td>
-                @item.Amount сом
-            </td>
-        </tr>
-}
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @((item.SenderUser != null) ? item.SenderUser.AccountNumber : "Пополнение")
+                </td>
+                <td>
+                    @(item.ReceiverUser?.AccountNumber ?? item.Services?.Name)
+                </td>
+                <td>
+                    @item.Date.ToShortDateString()
+                </td>
+                <td>
+                    @item.Type
+                </td>
+                <td>
+                    @item.Amount сом
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

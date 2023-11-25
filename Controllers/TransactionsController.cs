@@ -1,6 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OnlineWallet.Models;
+using ServiceProvider = OnlineWallet.Models.ServiceProvider;
 
 namespace OnlineWallet.Controllers
 {
@@ -11,11 +13,11 @@ namespace OnlineWallet.Controllers
         {
             _context = context;
         }
-
+        [Authorize]
         public async Task<IActionResult> Index(DateTime? fromDate, DateTime? toDate)
         {
             User user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
-            List<Transaction> transactions = await _context.Transactions.Include(t => t.SenderUser).Include(t => t.ReceiverUser).Where(t => t.SenderUserId == user.Id || t.ReceiverUserId == user.Id).ToListAsync();
+            List<Transaction> transactions = await _context.Transactions.Include(t => t.SenderUser).Include(t => t.ReceiverUser).Include(s => s.Services).Where(t => t.SenderUserId == user.Id || t.ReceiverUserId == user.Id).ToListAsync();
 
             if (fromDate != null)
             {
@@ -65,6 +67,7 @@ namespace OnlineWallet.Controllers
             else
                 return Json("Пользователь не найден");
         }
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> Transfer(string accountNumber, int amountMoney)
         {
@@ -100,6 +103,48 @@ namespace OnlineWallet.Controllers
             else
                 return Json("Некорректные данные отправителя или получателя");
         }
+        [Authorize]
+        [HttpPost]
+        public async Task<IActionResult> Payment(string service, string accountNumber, int amountMoney)
+        {
+            User user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == User.Identity.Name);
+            ServiceProvider serviceProvider = await _context.ServiceProviders.FirstOrDefaultAsync(s => s.Name == service);
 
+            if (user != null && serviceProvider != null)
+            {
+                if (amountMoney > 0 && user.Balance >= amountMoney)
+                {
+                    ServiceUser serviceUser = await _context.ServiceUsers.FirstOrDefaultAsync(s => s.ServiceProviderId == serviceProvider.Id && s.AccountNumber == accountNumber || s.PhoneNumber == accountNumber);
+
+                    if (serviceUser == null)
+                    {
+                        return Json("Вы не пользуетесь услугами этой компании");
+                    }
+
+                    user.Balance -= amountMoney;
+                    _context.Users.Update(user);
+
+                    serviceUser.Balance += amountMoney;
+                    _context.ServiceUsers.Update(serviceUser);
+
+                    Transaction transaction = new Transaction()
+                    {
+                        SenderUserId = user.Id,
+                        ServicesId = serviceProvider.Id,
+                        Amount = amountMoney,
+                        Date = DateTime.UtcNow,
+                        Type = "Оплата услуг"
+                    };
+                    await _context.Transactions.AddAsync(transaction);
+                    await _context.SaveChangesAsync();
+
+                    return Json("Операция прошла успешно");
+                }
+                else
+                    return Json("Недостаточно средств или некорректная сумма для перевода");
+            }
+            else
+                return Json("Некорректные данные отправителя или получателя");
+        }
     }
 }

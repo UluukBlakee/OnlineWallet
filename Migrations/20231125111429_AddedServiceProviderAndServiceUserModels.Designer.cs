@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using OnlineWallet.Models;
@@ -11,9 +12,10 @@ using OnlineWallet.Models;
 namespace OnlineWallet.Migrations
 {
     [DbContext(typeof(WalletContext))]
-    partial class WalletContextModelSnapshot : ModelSnapshot
+    [Migration("20231125111429_AddedServiceProviderAndServiceUserModels")]
+    partial class AddedServiceProviderAndServiceUserModels
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -231,12 +233,14 @@ namespace OnlineWallet.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("AccountNumber")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("Balance")
                         .HasColumnType("integer");
 
                     b.Property<string>("PhoneNumber")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<int>("ServiceProviderId")
@@ -263,13 +267,10 @@ namespace OnlineWallet.Migrations
                     b.Property<DateTime>("Date")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<int?>("ReceiverUserId")
+                    b.Property<int>("ReceiverUserId")
                         .HasColumnType("integer");
 
                     b.Property<int?>("SenderUserId")
-                        .HasColumnType("integer");
-
-                    b.Property<int?>("ServicesId")
                         .HasColumnType("integer");
 
                     b.Property<string>("Type")
@@ -280,8 +281,6 @@ namespace OnlineWallet.Migrations
                     b.HasIndex("ReceiverUserId");
 
                     b.HasIndex("SenderUserId");
-
-                    b.HasIndex("ServicesId");
 
                     b.ToTable("Transactions");
                 });
@@ -425,21 +424,17 @@ namespace OnlineWallet.Migrations
                 {
                     b.HasOne("OnlineWallet.Models.User", "ReceiverUser")
                         .WithMany()
-                        .HasForeignKey("ReceiverUserId");
+                        .HasForeignKey("ReceiverUserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("OnlineWallet.Models.User", "SenderUser")
                         .WithMany()
                         .HasForeignKey("SenderUserId");
 
-                    b.HasOne("OnlineWallet.Models.ServiceProvider", "Services")
-                        .WithMany()
-                        .HasForeignKey("ServicesId");
-
                     b.Navigation("ReceiverUser");
 
                     b.Navigation("SenderUser");
-
-                    b.Navigation("Services");
                 });
 #pragma warning restore 612, 618
         }

@@ -41,8 +41,8 @@ namespace OnlineWallet.Controllers
                     Email = model.Email,
                     UserName = model.Email,
                     AccountNumber = userId.ToString("D6"),
+                    PhoneNumber = model.PhoneNumber,
                     Balance = 1000
-
                 };
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)

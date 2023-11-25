@@ -1,0 +1,24 @@
+﻿@model OnlineWallet.Models.ServiceProvider
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h1 class="text-center">@Model.Name</h1>
+<div class="text-center d-flex justify-content-center">
+@if (ViewBag.UsesService){
+
+            <div class="card bg-dark border-2" style="max-width: 30rem;">
+                <div class="card-title">
+                    <img class="img-fluid" src="https://cdn-icons-png.flaticon.com/512/5776/5776173.png" alt=""> 
+                </div>
+                <div class="card-body bg-warning">
+                    <h1 class="card-title fw-semibold" style="font-size: 60px;" id="balance">@ViewBag.ServiceUser.Balance сом</h1>
+                </div>
+            </div>
+}
+else {
+    <a class="btn btn-primary" asp-controller="ServiceUsers" asp-action="Create" asp-route-id="@Model.Id">Пользоваться услугой</a>
+}
+</div>
+

@@ -8,6 +8,9 @@ namespace OnlineWallet.ViewModels
         [Required(ErrorMessage = "Поле 'Email' обязательно для заполнения")]
         [Display(Name = "Email")]
         public string Email { get; set; }
+        [Required(ErrorMessage = "Поле 'Номер телефона' обязательно для заполнения")]
+        [Display(Name = "Номер телефона")]
+        public string PhoneNumber { get; set; }
 
         [Required(ErrorMessage = "Поле 'Пароль' обязательно для заполнения")]
         [StringLength(100, ErrorMessage = "Пароль должен содержать минимум {2} символа.", MinimumLength = 6)]

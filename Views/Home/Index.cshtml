@@ -31,7 +31,9 @@
     }
 </div>
 
-    <div class="modal fade" id="transferModal" tabindex="-1" aria-labelledby="transferModalLabel" aria-hidden="true">
+@if (User.Identity.IsAuthenticated)
+    {
+        <div class="modal fade" id="transferModal" tabindex="-1" aria-labelledby="transferModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
@@ -60,18 +62,27 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="paymentModalLabel">Редактировать</h5>
+                    <h5 class="modal-title" id="paymentModalLabel">Оплатить услуги</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
                     <form id="paymentForm">
                         <div class="mb-3">
-                            <label for="accountNumber" class="form-label">Номер счета</label>
-                            <input type="text" class="form-control" id="inputAccountNumber" name="inputAccountNumber">
+                            <label for="service" class="form-label">Выберите услугу</label>
+                            <select class="form-control" id="service" name="service">
+                                @foreach (var service in ViewBag.Services)
+                                {
+                                    <option value="@service.Name">@service.Name</option>
+                                }
+                            </select>
                         </div>
                         <div class="mb-3">
-                            <label for="amountMoney" class="form-label">Сумма</label>
-                            <input type="number" class="form-control" id="inputAmountMoney" name="inputAmountMoney">
+                            <label for="paymentAccountNumber" class="form-label">Номер счета услуги</label>
+                            <input type="text" class="form-control" id="paymentAccountNumber" name="paymentAccountNumber">
+                        </div>
+                        <div class="mb-3">
+                            <label for="paymentAmountMoney" class="form-label">Сумма</label>
+                            <input type="number" class="form-control" id="paymentAmountMoney" name="paymentAmountMoney">
                         </div>
                         <button type="submit" class="btn btn-primary">Оплатить</button>
                     </form>
@@ -79,30 +90,36 @@
             </div>
         </div>
     </div>
-
-<div class="modal fade" id="replenishModal" tabindex="-1" aria-labelledby="replenishModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="replenishModalLabel">Пополнить</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <form id="replenishForm">
-                        <div class="mb-3">
-                            <label for="replenishAccountNumber" class="form-label">Номер счета</label>
-                            <input type="text" class="form-control" id="replenishAccountNumber" name="replenishAccountNumber">
-                        </div>
-                        <div class="mb-3">
-                            <label for="replenishAmountMoney" class="form-label">Сумма</label>
-                            <input type="number" class="form-control" id="replenishAmountMoney" name="replenishAmountMoney">
-                        </div>
-                        <button type="submit" class="btn btn-primary">Пополнить</button>
-                    </form>
+    }
+    else
+    {
+        <div class="modal fade" id="replenishModal" tabindex="-1" aria-labelledby="replenishModalLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="replenishModalLabel">Пополнить счет</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="replenishForm">
+                            <div class="mb-3">
+                                <label for="replenishAccountNumber" class="form-label">Номер счета</label>
+                                <input type="text" class="form-control" id="replenishAccountNumber" name="replenishAccountNumber">
+                            </div>
+                            <div class="mb-3">
+                                <label for="replenishAmountMoney" class="form-label">Сумма</label>
+                                <input type="number" class="form-control" id="replenishAmountMoney" name="replenishAmountMoney">
+                            </div>
+                            <button type="submit" class="btn btn-primary">Пополнить</button>
+                        </form>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
+    }
+    
+
+
 
 @section Scripts {
     <script>
@@ -111,16 +128,16 @@
                 e.preventDefault();
                 $.ajax({
                     url: '@Url.Action("Replenish", "Transactions")',
-                    type: 'Post',
+                    type: 'POST',
                     data: {
                         accountNumber: $('#replenishAccountNumber').val(),
                         amountMoney: parseInt($('#replenishAmountMoney').val(), 10)
                     },
-                    success: function(data) {
+                    success: function (data) {
                         $('#replenishModal').modal('hide');
                         alert(data);
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
                         alert('Произошла ошибка при выполнении операции: ' + error);
                     }
                 });
@@ -130,30 +147,52 @@
                 e.preventDefault();
                 $.ajax({
                     url: '@Url.Action("Transfer", "Transactions")',
-                    type: 'Post',
+                    type: 'POST',
                     data: {
                         accountNumber: $('#transferAccountNumber').val(),
                         amountMoney: parseInt($('#transferAmountMoney').val(), 10)
                     },
-                    success: function(data) {
+                    success: function (data) {
                         $('#transferModal').modal('hide');
                         getBalance();
                         alert(data);
                     },
-                    error: function(xhr, status, error) {
+                    error: function (xhr, status, error) {
+                        alert('Произошла ошибка при выполнении операции: ' + error);
+                    }
+                });
+            });
+
+            $('#paymentForm').submit(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '@Url.Action("Payment", "Transactions")',
+                    type: 'POST',
+                    data: {
+                        service: $('#service').val(), 
+                        accountNumber: $('#paymentAccountNumber').val(),
+                        amountMoney: parseInt($('#paymentAmountMoney').val(), 10)
+                    },
+                    success: function (data) {
+                        $('#paymentModal').modal('hide');
+                        getBalance();
+                        alert(data);
+                    },
+                    error: function (xhr, status, error) {
                         alert('Произошла ошибка при выполнении операции: ' + error);
                     }
                 });
             });
 
             function getBalance() {
-                $.get('@Url.Action("GetBalance", "Transactions")', function(data) {
+                $.get('@Url.Action("GetBalance", "Transactions")', function (data) {
                     $('#balance').text(data.balance + ' сом');
                 });
             }
         });
     </script>
 }
+
 
 
 

@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using OnlineWallet.Models;
 using System.Diagnostics;
+using ServiceProvider = OnlineWallet.Models.ServiceProvider;
 
 namespace OnlineWallet.Controllers
 {
@@ -19,6 +20,8 @@ namespace OnlineWallet.Controllers
         {
             if (User.Identity.IsAuthenticated)
             {
+                List<ServiceProvider> serviceProviders = await _context.ServiceProviders.ToListAsync();
+                ViewBag.Services = serviceProviders;
                 User user = await _context.Users.FirstOrDefaultAsync(u => u.Email == User.Identity.Name);
                 return View(user);
             }
