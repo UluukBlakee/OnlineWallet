@@ -6,12 +6,12 @@
 <div class="text-center d-flex justify-content-center">
     @if (User.Identity.IsAuthenticated)
     {
-            <div class="card text-bg-dark border-2" style="max-width: 30rem;">
+            <div class="card bg-dark border-2" style="max-width: 30rem;">
                 <div class="card-title">
                     <img class="img-fluid" src="https://cdn-icons-png.flaticon.com/512/5776/5776173.png" alt=""> 
                 </div>
                 <div class="card-body bg-warning">
-                    <h1 class="card-title fw-semibold" style="font-size: 60px;">1000 сом</h1>
+                    <h1 class="card-title fw-semibold" style="font-size: 60px;" id="balance">@Model.Balance сом</h1>
                     <button class="btn btn-dark me-4" data-bs-toggle="modal" data-bs-target="#transferModal">Перевод</button>
                     <button class="btn btn-dark" data-bs-toggle="modal" data-bs-target="#paymentModal">Оплата услуг</button>
                 </div>
@@ -41,12 +41,12 @@
                 <div class="modal-body">
                     <form id="transferForm">
                         <div class="mb-3">
-                            <label for="accountNumber" class="form-label">Номер счета</label>
-                            <input type="text" class="form-control" id="inputAccountNumber" name="inputAccountNumber">
+                            <label for="transferAccountNumber" class="form-label">Номер счета</label>
+                            <input type="text" class="form-control" id="transferAccountNumber" name="transferAccountNumber">
                         </div>
                         <div class="mb-3">
-                            <label for="amountMoney" class="form-label">Сумма</label>
-                            <input type="number" class="form-control" id="inputAmountMoney" name="inputAmountMoney">
+                            <label for="transferAmountMoney" class="form-label">Сумма</label>
+                            <input type="number" class="form-control" id="transferAmountMoney" name="transferAmountMoney">
                         </div>
                         <button type="submit" class="btn btn-primary">Оплатить</button>
                     </form>
@@ -64,14 +64,14 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                    <form id="transferForm">
+                    <form id="paymentForm">
                         <div class="mb-3">
-                            <label for="transferAccountNumber" class="form-label">Номер счета</label>
-                            <input type="text" class="form-control" id="transferAccountNumber" name="transferAccountNumber">
+                            <label for="accountNumber" class="form-label">Номер счета</label>
+                            <input type="text" class="form-control" id="inputAccountNumber" name="inputAccountNumber">
                         </div>
                         <div class="mb-3">
-                            <label for="transferAmountMoney" class="form-label">Сумма</label>
-                            <input type="number" class="form-control" id="transferAmountMoney" name="transferAmountMoney">
+                            <label for="amountMoney" class="form-label">Сумма</label>
+                            <input type="number" class="form-control" id="inputAmountMoney" name="inputAmountMoney">
                         </div>
                         <button type="submit" class="btn btn-primary">Оплатить</button>
                     </form>
@@ -109,16 +109,14 @@
         $(document).ready(function () {
             $('#replenishForm').submit(function (e) {
                 e.preventDefault();
-
                 $.ajax({
-                    url: '@Url.Action("Replenish", "Users")',
+                    url: '@Url.Action("Replenish", "Transactions")',
                     type: 'Post',
                     data: {
                         accountNumber: $('#replenishAccountNumber').val(),
                         amountMoney: parseInt($('#replenishAmountMoney').val(), 10)
                     },
                     success: function(data) {
-                        console.log(data);
                         $('#replenishModal').modal('hide');
                         alert(data);
                     },
@@ -127,8 +125,35 @@
                     }
                 });
             });
+
+            $('#transferForm').submit(function (e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '@Url.Action("Transfer", "Transactions")',
+                    type: 'Post',
+                    data: {
+                        accountNumber: $('#transferAccountNumber').val(),
+                        amountMoney: parseInt($('#transferAmountMoney').val(), 10)
+                    },
+                    success: function(data) {
+                        $('#transferModal').modal('hide');
+                        getBalance();
+                        alert(data);
+                    },
+                    error: function(xhr, status, error) {
+                        alert('Произошла ошибка при выполнении операции: ' + error);
+                    }
+                });
+            });
+
+            function getBalance() {
+                $.get('@Url.Action("GetBalance", "Transactions")', function(data) {
+                    $('#balance').text(data.balance + ' сом');
+                });
+            }
         });
     </script>
 }
+
 
 

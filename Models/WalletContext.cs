@@ -8,6 +8,7 @@ namespace OnlineWallet.Models
     public class WalletContext : IdentityDbContext<User, IdentityRole<int>, int>
     {
         public DbSet<User> Users { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
         public WalletContext(DbContextOptions<WalletContext> options) : base(options) { }
     }
 }
